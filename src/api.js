@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get the API URL from environment variables
-const API_URL = import.meta.env.VITE_API_URL || 'https://attendancedb.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://attendancedatabase.onrender.com';
 
 // Create axios instance with base URL
 const api = axios.create({
@@ -12,9 +12,13 @@ const api = axios.create({
     timeout: 30000, // 30 seconds timeout
 });
 
-// Request interceptor for logging (optional)
+// Request interceptor to attach JWT token
 api.interceptors.request.use(
     (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
         console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
         return config;
     },
@@ -33,6 +37,18 @@ api.interceptors.response.use(
         if (error.response) {
             // Server responded with error status
             console.error('API Error Response:', error.response.status, error.response.data);
+
+            // Handle authentication errors
+            if (error.response.status === 401) {
+                // Token expired or invalid
+                localStorage.removeItem('token');
+
+                // Only redirect if not already on auth pages
+                if (!window.location.pathname.includes('/login') &&
+                    !window.location.pathname.includes('/register')) {
+                    window.location.href = '/login';
+                }
+            }
         } else if (error.request) {
             // Request made but no response received
             console.error('API No Response:', error.request);

@@ -10,7 +10,7 @@
         },
         {
             "source": "/api/(.*)",
-            "destination": "https://attendancedb.onrender.com/api/$1"
+            "destination": "https://attendancedatabase.onrender.com/api/$1"
         }
     ],
     "headers": [

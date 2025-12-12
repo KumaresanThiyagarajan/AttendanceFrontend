@@ -83,6 +83,24 @@
     transform: translateY(-2px);
 }
 
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-700);
+    font-weight: 500;
+}
+
+.username {
+    font-weight: 600;
+}
+
 @media (max-width: 768px) {
     .navbar-links {
         gap: 0.25rem;
@@ -99,5 +117,13 @@
 
     .navbar-title {
         font-size: 1.25rem;
+    }
+
+    .user-info .username {
+        display: none;
+    }
+
+    .navbar-user {
+        gap: 0.5rem;
     }
 }

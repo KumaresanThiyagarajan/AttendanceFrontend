@@ -1,10 +1,13 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, Clock, DollarSign, FileText } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Home, Users, Clock, DollarSign, FileText, LogOut, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
 
     const navItems = [
         { path: '/', label: 'Dashboard', icon: Home },
@@ -13,6 +16,11 @@ const Navbar = () => {
         { path: '/advances', label: 'Advances', icon: DollarSign },
         { path: '/salary-report', label: 'Salary Report', icon: FileText },
     ];
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
 
     return (
         <nav className="navbar">
@@ -39,6 +47,24 @@ const Navbar = () => {
                                 </Link>
                             );
                         })}
+                    </div>
+
+                    <div className="navbar-user">
+                        <div className="user-info">
+                            <User size={18} />
+                            <span className="username">{user?.username}</span>
+                            {user?.role === 'admin' && (
+                                <span className="badge badge-primary">Admin</span>
+                            )}
+                        </div>
+                        <button
+                            className="btn btn-sm btn-secondary"
+                            onClick={handleLogout}
+                            title="Logout"
+                        >
+                            <LogOut size={16} />
+                            Logout
+                        </button>
                     </div>
                 </div>
             </div>
