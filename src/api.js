@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get the API URL from environment variables
-const API_URL = import.meta.env.VITE_API_URL || 'https://attendancedatabase.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://attendance-back-pt7g.onrender.com';
 
 // Create axios instance with base URL
 const api = axios.create({
