@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { DollarSign, Plus, Trash2, Filter } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -26,7 +26,7 @@ const Advances = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get('/api/employees');
+            const response = await api.get('/api/employees');
             setEmployees(response.data.filter(emp => emp.isActive));
         } catch (error) {
             console.error('Error fetching employees:', error);
@@ -40,7 +40,7 @@ const Advances = () => {
             if (filters.employeeId) url += `employeeId=${filters.employeeId}&`;
             if (filters.status) url += `status=${filters.status}&`;
 
-            const response = await axios.get(url);
+            const response = await api.get(url);
             setAdvances(response.data);
         } catch (error) {
             console.error('Error fetching advances:', error);
@@ -53,7 +53,7 @@ const Advances = () => {
         e.preventDefault();
 
         try {
-            await axios.post('/api/advances', formData);
+            await api.post('/api/advances', formData);
             alert('Advance payment recorded successfully!');
             resetForm();
             fetchAdvances();
@@ -67,7 +67,7 @@ const Advances = () => {
         if (!window.confirm('Are you sure you want to delete this advance record?')) return;
 
         try {
-            await axios.delete(`/api/advances/${id}`);
+            await api.delete(`/api/advances/${id}`);
             alert('Advance deleted successfully!');
             fetchAdvances();
         } catch (error) {

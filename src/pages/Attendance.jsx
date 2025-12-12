@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Calendar, Clock, Save, X, CheckCircle, History } from 'lucide-react';
 import { format } from 'date-fns';
 import './Attendance.css';
@@ -27,7 +27,7 @@ const Attendance = () => {
     const fetchEmployees = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('/api/employees');
+            const response = await api.get('/api/employees');
             const activeEmployees = response.data.filter(emp => emp.isActive);
             setEmployees(activeEmployees);
 
@@ -51,7 +51,7 @@ const Attendance = () => {
 
     const fetchAttendanceForDate = async () => {
         try {
-            const response = await axios.get(`/api/attendance?startDate=${selectedDate}&endDate=${selectedDate}`);
+            const response = await api.get(`/api/attendance?startDate=${selectedDate}&endDate=${selectedDate}`);
             const existing = {};
 
             response.data.forEach(record => {
@@ -80,7 +80,7 @@ const Attendance = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const response = await axios.get('/api/attendance');
+            const response = await api.get('/api/attendance');
             setAttendanceHistory(response.data);
             setShowHistory(true);
         } catch (error) {
@@ -131,11 +131,11 @@ const Attendance = () => {
 
             if (existingAttendance[employeeId]?._id) {
                 // Update existing
-                await axios.put(`/api/attendance/${existingAttendance[employeeId]._id}`, payload);
+                await api.put(`/api/attendance/${existingAttendance[employeeId]._id}`, payload);
                 alert('Attendance updated successfully!');
             } else {
                 // Create new
-                await axios.post('/api/attendance', payload);
+                await api.post('/api/attendance', payload);
                 alert('Attendance saved successfully!');
             }
 

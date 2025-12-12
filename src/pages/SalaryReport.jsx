@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { FileText, Download, Calculator } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -19,7 +19,7 @@ const SalaryReport = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await axios.get('/api/employees');
+            const response = await api.get('/api/employees');
             setEmployees(response.data.filter(emp => emp.isActive));
         } catch (error) {
             console.error('Error fetching employees:', error);
@@ -34,7 +34,7 @@ const SalaryReport = () => {
 
         try {
             setLoading(true);
-            const response = await axios.get(
+            const response = await api.get(
                 `/api/salary/calculate/${selectedEmployee}?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
             );
             setSalaryData(response.data);
@@ -53,7 +53,7 @@ const SalaryReport = () => {
         }
 
         try {
-            const response = await axios.get(
+            const response = await api.get(
                 `/api/salary/report/${selectedEmployee}?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`,
                 { responseType: 'blob' }
             );

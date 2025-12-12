@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Users, Clock, DollarSign, TrendingUp } from 'lucide-react';
 import './Dashboard.css';
 
@@ -22,16 +22,16 @@ const Dashboard = () => {
             setLoading(true);
 
             // Fetch employees
-            const employeesRes = await axios.get('/api/employees');
+            const employeesRes = await api.get('/api/employees');
             const employees = employeesRes.data;
             const activeEmployees = employees.filter(emp => emp.isActive);
 
             // Fetch today's attendance
             const today = new Date().toISOString().split('T')[0];
-            const attendanceRes = await axios.get(`/api/attendance?startDate=${today}&endDate=${today}`);
+            const attendanceRes = await api.get(`/api/attendance?startDate=${today}&endDate=${today}`);
 
             // Fetch pending advances
-            const advancesRes = await axios.get('/api/advances?status=pending');
+            const advancesRes = await api.get('/api/advances?status=pending');
             const advances = advancesRes.data;
             const totalAdvanceAmount = advances.reduce((sum, adv) => sum + adv.amount, 0);
 

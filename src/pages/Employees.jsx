@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { UserPlus, Edit2, Trash2, Search } from 'lucide-react';
 
 const Employees = () => {
@@ -24,7 +24,7 @@ const Employees = () => {
     const fetchEmployees = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('/api/employees');
+            const response = await api.get('/api/employees');
             setEmployees(response.data);
         } catch (error) {
             console.error('Error fetching employees:', error);
@@ -39,10 +39,10 @@ const Employees = () => {
 
         try {
             if (editingId) {
-                await axios.put(`/api/employees/${editingId}`, formData);
+                await api.put(`/api/employees/${editingId}`, formData);
                 alert('Employee updated successfully!');
             } else {
-                await axios.post('/api/employees', formData);
+                await api.post('/api/employees', formData);
                 alert('Employee added successfully!');
             }
 
@@ -71,7 +71,7 @@ const Employees = () => {
         if (!window.confirm('Are you sure you want to delete this employee?')) return;
 
         try {
-            await axios.delete(`/api/employees/${id}`);
+            await api.delete(`/api/employees/${id}`);
             alert('Employee deleted successfully!');
             fetchEmployees();
         } catch (error) {
