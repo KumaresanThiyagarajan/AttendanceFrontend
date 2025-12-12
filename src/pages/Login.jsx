@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, User, Lock, AlertCircle } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 import './Login.css';
 
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({
-        username: 'kumaresanthiyagarajan11@gmail.com',
+        email: 'kumaresanthiyagarajan11@gmail.com',
         password: 'Kumar112227'
     });
     const [error, setError] = useState('');
@@ -20,7 +20,7 @@ const Login = () => {
         setLoading(true);
 
         try {
-            await login(formData.username, formData.password);
+            await login(formData.email, formData.password);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -57,16 +57,16 @@ const Login = () => {
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label className="form-label">
-                            <User size={16} />
-                            Username
+                            <Mail size={16} />
+                            Email Address
                         </label>
                         <input
-                            type="text"
-                            name="username"
+                            type="email"
+                            name="email"
                             className="form-input"
-                            value={formData.username}
+                            value={formData.email}
                             onChange={handleChange}
-                            placeholder="Enter your username"
+                            placeholder="Enter your email"
                             required
                             autoFocus
                         />

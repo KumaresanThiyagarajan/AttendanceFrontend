@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserPlus, User, Lock, AlertCircle, CheckCircle } from 'lucide-react';
+import { UserPlus, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import './Login.css';
 
 const Register = () => {
     const navigate = useNavigate();
     const { register } = useAuth();
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: '',
         confirmPassword: ''
     });
@@ -33,7 +33,7 @@ const Register = () => {
         setLoading(true);
 
         try {
-            await register(formData.username, formData.password);
+            await register(formData.email, formData.password);
             // Auto-login after registration
             navigate('/');
         } catch (err) {
@@ -71,22 +71,20 @@ const Register = () => {
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label className="form-label">
-                            <User size={16} />
-                            Username
+                            <Mail size={16} />
+                            Email Address
                         </label>
                         <input
-                            type="text"
-                            name="username"
+                            type="email"
+                            name="email"
                             className="form-input"
-                            value={formData.username}
+                            value={formData.email}
                             onChange={handleChange}
-                            placeholder="Choose a username"
+                            placeholder="Enter your email"
                             required
                             autoFocus
-                            minLength={3}
-                            maxLength={30}
                         />
-                        <small className="form-hint">3-30 characters</small>
+                        <small className="form-hint">Must be a valid email address</small>
                     </div>
 
                     <div className="form-group">
