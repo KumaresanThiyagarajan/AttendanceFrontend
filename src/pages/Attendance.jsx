@@ -4,10 +4,11 @@ import { Calendar, Clock, Save, X, CheckCircle, History, Eye } from 'lucide-reac
 import { format } from 'date-fns';
 import './Attendance.css';
 import { useAuth } from '../context/AuthContext';
-import { canCreate, canEdit, isViewOnly } from '../utils/permissions';
+import { usePermissions } from '../utils/permissions';
 
 const Attendance = () => {
     const { user } = useAuth();
+    const { canCreate, canEdit, isViewOnly } = usePermissions();
     const [employees, setEmployees] = useState([]);
     const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
     const [attendanceData, setAttendanceData] = useState({});

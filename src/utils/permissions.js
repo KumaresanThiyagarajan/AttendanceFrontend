@@ -1,27 +1,16 @@
 import { useAuth } from '../context/AuthContext';
 
-// Check if user has admin role
-export const isAdmin = () => {
+// Custom hook to check permissions
+// Usage: const { isAdmin, canEdit, canDelete, canCreate, isViewOnly } = usePermissions();
+export const usePermissions = () => {
     const { user } = useAuth();
-    return user?.role === 'admin';
+
+    return {
+        isAdmin: user?.role === 'admin',
+        canEdit: user?.role === 'admin',
+        canDelete: user?.role === 'admin',
+        canCreate: user?.role === 'admin',
+        isViewOnly: user?.role !== 'admin'
+    };
 };
 
-// Check if user can edit (only admins)
-export const canEdit = () => {
-    return isAdmin();
-};
-
-// Check if user can delete (only admins)
-export const canDelete = () => {
-    return isAdmin();
-};
-
-// Check if user can create (only admins)
-export const canCreate = () => {
-    return isAdmin();
-};
-
-// Check if user is view-only (non-admin)
-export const isViewOnly = () => {
-    return !isAdmin();
-};

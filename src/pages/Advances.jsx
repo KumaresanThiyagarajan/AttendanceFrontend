@@ -3,9 +3,10 @@ import api from '../api';
 import { DollarSign, Plus, Trash2, Filter, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
-import { canCreate, canDelete, isViewOnly } from '../utils/permissions';
+import { usePermissions } from '../utils/permissions';
 
 const Advances = () => {
+    const { canCreate, canDelete, isViewOnly } = usePermissions();
     const [employees, setEmployees] = useState([]);
     const [advances, setAdvances] = useState([]);
     const [loading, setLoading] = useState(true);

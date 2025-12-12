@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { UserPlus, Edit2, Trash2, Search, Eye } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { canCreate, canEdit, canDelete, isViewOnly } from '../utils/permissions';
+import { usePermissions } from '../utils/permissions';
 
 const Employees = () => {
     const { user } = useAuth();
+    const { canCreate, canEdit, canDelete, isViewOnly } = usePermissions();
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
