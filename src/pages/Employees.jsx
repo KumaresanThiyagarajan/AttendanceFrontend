@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { UserPlus, Edit2, Trash2, Search } from 'lucide-react';
+import { UserPlus, Edit2, Trash2, Search, Eye } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { canCreate, canEdit, canDelete, isViewOnly } from '../utils/permissions';
 
 const Employees = () => {
+    const { user } = useAuth();
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -111,15 +114,25 @@ const Employees = () => {
             <div className="flex justify-between items-center" style={{ marginBottom: '2rem' }}>
                 <div>
                     <h1>Employee Management</h1>
-                    <p className="text-gray-600">Manage your workforce</p>
+                    <p className="text-gray-600">
+                        {isViewOnly() ? 'View employee information (Read-only)' : 'Manage your workforce'}
+                    </p>
                 </div>
-                <button
-                    className="btn btn-primary"
-                    onClick={() => setShowForm(!showForm)}
-                >
-                    <UserPlus size={18} />
-                    {showForm ? 'Cancel' : 'Add Employee'}
-                </button>
+                {canCreate() && (
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => setShowForm(!showForm)}
+                    >
+                        <UserPlus size={18} />
+                        {showForm ? 'Cancel' : 'Add Employee'}
+                    </button>
+                )}
+                {isViewOnly() && (
+                    <div className="badge badge-warning" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+                        <Eye size={16} />
+                        <span style={{ marginLeft: '0.5rem' }}>View Only Mode</span>
+                    </div>
+                )}
             </div>
 
             {showForm && (
@@ -275,20 +288,28 @@ const Employees = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    className="btn btn-sm btn-secondary"
-                                                    onClick={() => handleEdit(employee)}
-                                                >
-                                                    <Edit2 size={14} />
-                                                </button>
-                                                <button
-                                                    className="btn btn-sm btn-danger"
-                                                    onClick={() => handleDelete(employee._id)}
-                                                >
-                                                    <Trash2 size={14} />
-                                                </button>
-                                            </div>
+                                            {(canEdit() || canDelete()) ? (
+                                                <div className="flex gap-2">
+                                                    {canEdit() && (
+                                                        <button
+                                                            className="btn btn-sm btn-secondary"
+                                                            onClick={() => handleEdit(employee)}
+                                                        >
+                                                            <Edit2 size={14} />
+                                                        </button>
+                                                    )}
+                                                    {canDelete() && (
+                                                        <button
+                                                            className="btn btn-sm btn-danger"
+                                                            onClick={() => handleDelete(employee._id)}
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <span className="text-gray-500" style={{ fontSize: '0.875rem' }}>-</span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))

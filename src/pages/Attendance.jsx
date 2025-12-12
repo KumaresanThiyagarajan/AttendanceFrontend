@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { Calendar, Clock, Save, X, CheckCircle, History } from 'lucide-react';
+import { Calendar, Clock, Save, X, CheckCircle, History, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import './Attendance.css';
+import { useAuth } from '../context/AuthContext';
+import { canCreate, canEdit, isViewOnly } from '../utils/permissions';
 
 const Attendance = () => {
+    const { user } = useAuth();
     const [employees, setEmployees] = useState([]);
     const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
     const [attendanceData, setAttendanceData] = useState({});
@@ -173,12 +176,22 @@ const Attendance = () => {
             <div className="attendance-header">
                 <div>
                     <h1>Daily Attendance</h1>
-                    <p className="text-gray-600">Mark attendance for all employees</p>
+                    <p className="text-gray-600">
+                        {isViewOnly() ? 'View attendance records (Read-only)' : 'Mark attendance for all employees'}
+                    </p>
                 </div>
-                <button className="btn btn-secondary" onClick={fetchAttendanceHistory}>
-                    <History size={18} />
-                    View History
-                </button>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <button className="btn btn-secondary" onClick={fetchAttendanceHistory}>
+                        <History size={18} />
+                        View History
+                    </button>
+                    {isViewOnly() && (
+                        <div className="badge badge-warning" style={{ padding: '0.5rem 1rem' }}>
+                            <Eye size={16} />
+                            <span style={{ marginLeft: '0.5rem' }}>View Only</span>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="card" style={{ marginBottom: '2rem' }}>
@@ -303,21 +316,29 @@ const Attendance = () => {
                                         )}
 
                                         <div className="card-actions">
-                                            <button
-                                                className="btn btn-success btn-sm"
-                                                onClick={() => saveAttendance(employee._id)}
-                                                disabled={saving}
-                                            >
-                                                <Save size={16} />
-                                                {isMarked ? 'Update' : 'Save'}
-                                            </button>
-                                            <button
-                                                className="btn btn-secondary btn-sm"
-                                                onClick={() => clearAttendance(employee._id)}
-                                            >
-                                                <X size={16} />
-                                                Clear
-                                            </button>
+                                            {canEdit() ? (
+                                                <>
+                                                    <button
+                                                        className="btn btn-success btn-sm"
+                                                        onClick={() => saveAttendance(employee._id)}
+                                                        disabled={saving}
+                                                    >
+                                                        <Save size={16} />
+                                                        {isMarked ? 'Update' : 'Save'}
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-secondary btn-sm"
+                                                        onClick={() => clearAttendance(employee._id)}
+                                                    >
+                                                        <X size={16} />
+                                                        Clear
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <span className="text-gray-500" style={{ fontSize: '0.875rem' }}>
+                                                    View only - no editing allowed
+                                                </span>
+                                            )}
                                         </div>
 
                                         {isMarked && (

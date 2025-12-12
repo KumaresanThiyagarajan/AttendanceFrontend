@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { DollarSign, Plus, Trash2, Filter } from 'lucide-react';
+import { DollarSign, Plus, Trash2, Filter, Eye } from 'lucide-react';
 import { format } from 'date-fns';
+import { useAuth } from '../context/AuthContext';
+import { canCreate, canDelete, isViewOnly } from '../utils/permissions';
 
 const Advances = () => {
     const [employees, setEmployees] = useState([]);
@@ -95,15 +97,25 @@ const Advances = () => {
             <div className="flex justify-between items-center" style={{ marginBottom: '2rem' }}>
                 <div>
                     <h1>Advance Payments</h1>
-                    <p className="text-gray-600">Track employee advances and deductions</p>
+                    <p className="text-gray-600">
+                        {isViewOnly() ? 'View advance payment records (Read-only)' : 'Track employee advances and deductions'}
+                    </p>
                 </div>
-                <button
-                    className="btn btn-primary"
-                    onClick={() => setShowForm(!showForm)}
-                >
-                    <Plus size={18} />
-                    {showForm ? 'Cancel' : 'Record Advance'}
-                </button>
+                {canCreate() && (
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => setShowForm(!showForm)}
+                    >
+                        <Plus size={18} />
+                        {showForm ? 'Cancel' : 'Record Advance'}
+                    </button>
+                )}
+                {isViewOnly() && (
+                    <div className="badge badge-warning" style={{ padding: '0.5rem 1rem' }}>
+                        <Eye size={16} />
+                        <span style={{ marginLeft: '0.5rem' }}>View Only</span>
+                    </div>
+                )}
             </div>
 
             <div className="grid grid-cols-3" style={{ gap: '1.5rem', marginBottom: '2rem' }}>
@@ -358,12 +370,16 @@ const Advances = () => {
                                                 </span>
                                             </td>
                                             <td>
-                                                <button
-                                                    className="btn btn-sm btn-danger"
-                                                    onClick={() => handleDelete(advance._id)}
-                                                >
-                                                    <Trash2 size={14} />
-                                                </button>
+                                                {canDelete() ? (
+                                                    <button
+                                                        className="btn btn-sm btn-danger"
+                                                        onClick={() => handleDelete(advance._id)}
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-gray-500" style={{ fontSize: '0.875rem' }}>-</span>
+                                                )}
                                             </td>
                                         </tr>
                                     ))
