@@ -26,6 +26,6 @@ export default defineConfig({
     envPrefix: 'VITE_',
     // Define global constants
     define: {
-        'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'https://attendancedatabase.onrender.com')
+        'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'https://attendance-back-pt7g.onrender.com')
     }
 })
